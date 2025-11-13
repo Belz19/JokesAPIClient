@@ -50,4 +50,31 @@ class JokesViewModel: ViewModel (){
             }
         }
     }
+
+    fun deleteJoke(id: Int){
+        viewModelScope.launch {
+            try {
+                api
+                    .deleteJoke(id)
+                getJokes()
+            }catch (e: Exception){
+                _uiState.value = JokesUiState.Error(
+                    "Failed to delete joke: ${e.message ?: " Unknown error"}"
+                )
+            }
+        }
+    }
+    fun updateJoke(id: Int, setup: String,punchline: String){
+        viewModelScope.launch {
+            try {
+                val updatedJoke = Joke(id = id, setup = setup, punchline = punchline)
+                api.updateJoke(id, updatedJoke)
+                getJokes()
+            }catch (e: Exception){
+                _uiState.value = JokesUiState.Error(
+                    "Failed to update Joke: ${e.message ?: "Unknown error"}"
+                )
+            }
+        }
+    }
 }
